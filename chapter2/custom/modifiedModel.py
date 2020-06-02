@@ -2,14 +2,14 @@ import keras
 
 
 import gym, numpy as np, matplotlib.pyplot as plt
-from chapter2.custom.policy_gradient_utilities import PolicyGradient
+from policy_gradient_utilities import PolicyGradient
 
 #Parameters 
 n_units = 5
 gamma = .99
 batch_size = 50
 learning_rate = 1e-3
-n_episodes = 100000
+n_episodes = 1000000
 render = False
 goal = 195
 n_layers = 2
@@ -55,7 +55,9 @@ def cart_pole_game(environment, policy_model, model_predictions):
     discounted_rewards = np.empty(0).reshape(0, 1)
     
     while n_episode < n_episodes: 
-         
+        
+
+        
         state = np.reshape(observation, [1, environment_dimension])        
         prediction = model_predictions.predict([state])[0]
         action = np.random.choice(range(environment.action_space.n), p=prediction)
@@ -67,6 +69,8 @@ def cart_pole_game(environment, policy_model, model_predictions):
         rewards = np.vstack([rewards, reward])
 
         if episode_done == True:
+            if (n_episode + 1) % 100000 == 0:
+                print('Run number: {}'.format(n_episode + 1))
             
             discounted_reward = calculate_discounted_reward(rewards)
             discounted_rewards = np.vstack([discounted_rewards, discounted_reward])
@@ -127,4 +131,4 @@ if __name__ == '__main__':
                    policy_model=policy_model, 
                    model_predictions=model_predictions)
     
-    model_predictions.save('savings/chapter2/cartpole/e1000k.h5')
+    model_predictions.save('../../savings/chapter2/cartpole/e1000k.h5')
